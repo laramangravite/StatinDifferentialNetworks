@@ -1,0 +1,16 @@
+library("GeneNet")
+
+# shrinkage estimation of GGM
+build_shrinkage_ggm <- function(gex, labels)
+{
+  nodelables = labels
+  
+  inferred.pcor <- ggm.estimate.pcor(gex) # assumes static gex data, rows are multivariate observation
+  test.results <- ggm.test.edges(inferred.pcor, fdr=T, direct=F, plot=T)
+  
+  pruned.results <- extract.network(test.results, method.ggm=c("prob"), cutoff.ggm=0.8, verbose=TRUE)
+  
+  gr <- ggm.make.graph(pruned.results, nodelables)
+  #show.edge.weights(gr)
+  return(gr)
+}
